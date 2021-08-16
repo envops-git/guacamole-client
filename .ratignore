@@ -1,3 +1,5 @@
 CONTRIBUTING
+guacamole-client/*
+guacamole-docker
 doc/licenses/*/**/*
 doc/**/html/*.html
