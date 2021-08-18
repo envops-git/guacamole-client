@@ -2,7 +2,7 @@
     <input type="checkbox"
            ng-model="context.attachedClients[item.getClientIdentifier()]"
            ng-change="context.updateAttachedClients(item.getClientIdentifier())">
-    <a ng-href="{{ item.getClientURL() }}">
+    <a ng-href="{{ item.getClientURL() }}" target="_blank">
         <div class="icon type" ng-class="item.protocol"></div>
         <span class="name">{{item.name}}</span>
     </a>
