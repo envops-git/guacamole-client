@@ -17,15 +17,15 @@
  * under the License.
  */
 
-const AngularTemplateCachePlugin = require('angular-templatecache--plugin');
-const { CleanPlugin } = require('clean--plugin');
-const ClosurePlugin = require('closure--plugin');
-const CopyPlugin = require('copy--plugin');
-const CssMinimizerPlugin = require('css-minimizer--plugin');
+const AngularTemplateCacheWebpackPlugin = require('angular-templatecache-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ClosureWebpackPlugin = require('closure-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const DependencyListPlugin = require('./plugins/dependency-list-plugin');
-const HtmlPlugin = require('html--plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const  = require('');
+const webpack = require('webpack');
 
 module.exports = {
 
