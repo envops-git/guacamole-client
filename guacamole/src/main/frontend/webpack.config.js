@@ -17,15 +17,15 @@
  * under the License.
  */
 
-const AngularTemplateCachePlugin = require('angular-templatecache--plugin');
-const { CleanPlugin } = require('clean--plugin');
-const ClosurePlugin = require('closure--plugin');
-const CopyPlugin = require('copy--plugin');
-const CssMinimizerPlugin = require('css-minimizer--plugin');
+const AngularTemplateCacheWebpackPlugin = require('angular-templatecache-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ClosureWebpackPlugin = require('closure-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const DependencyListPlugin = require('./plugins/dependency-list-plugin');
-const HtmlPlugin = require('html--plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const  = require('');
+const webpack = require('webpack');
 
 module.exports = {
 
@@ -63,7 +63,7 @@ module.exports = {
             },
 
             /*
-             * Necessary to be able to use angular 1 with  as explained in https://github.com///issues/2049
+             * Necessary to be able to use angular 1 with webpack as explained in https://github.com/webpack/webpack/issues/2049
              */
             {
                 test: require.resolve('angular'),
@@ -80,7 +80,7 @@ module.exports = {
         minimizer: [
 
             // Minify using Google Closure Compiler
-            new ClosurePlugin({ mode: 'STANDARD' }, {
+            new ClosureWebpackPlugin({ mode: 'STANDARD' }, {
                 languageIn: 'ECMASCRIPT_2020',
                 languageOut: 'ECMASCRIPT5',
                 compilationLevel: 'SIMPLE'
@@ -105,7 +105,7 @@ module.exports = {
     },
     plugins: [
 
-        new AngularTemplateCachePlugin({
+        new AngularTemplateCacheWebpackPlugin({
             module: 'templates-main',
             root: 'app/',
             source: 'src/app/**/*.html',
@@ -113,7 +113,7 @@ module.exports = {
         }),
 
         // Automatically clean out dist/ directory
-        new CleanPlugin(),
+        new CleanWebpackPlugin(),
 
         // Copy static files to dist/
         new CopyPlugin([
@@ -139,12 +139,12 @@ module.exports = {
         }),
 
         // Generate index.html from template
-        new HtmlPlugin({
+        new HtmlWebpackPlugin({
             inject: false,
             template: 'src/index.html'
         }),
 
-        // Extract CSS from  bundle as separate file
+        // Extract CSS from Webpack bundle as separate file
         new MiniCssExtractPlugin({
             filename: 'guacamole.[contenthash].css',
             chunkFilename: '[id].guacamole.[contenthash].css'
@@ -155,7 +155,7 @@ module.exports = {
         new DependencyListPlugin(),
 
         // Automatically require used modules
-        new .ProvidePlugin({
+        new webpack.ProvidePlugin({
             jstz: 'jstz',
             Pickr: '@simonwep/pickr',
             saveAs: 'file-saver'
