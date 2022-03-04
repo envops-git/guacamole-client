@@ -1,0 +1,39 @@
+.login-ui .login-dialog .logo {
+        background-image: url('app/ext/tempnamespace/images/logo-placeholder.png');
+        background-size: 97% auto;
+        width: 120px;
+        height: 120px;
+}
+div.login-ui {
+	background: #666;
+	background-color: #666;
+}
+.login-ui .login-dialog {
+	background-color: white;
+}
+
+.login-ui .login-dialog .version .app-name {
+        text-transform: uppercase;
+        text-align: center;
+        font-size: 1.25em;
+        font-weight: unset;
+        font-family: Copperplate, fantasy;
+        color: #4665bb;
+}
+
+.login-ui .login-dialog .buttons input[type="submit"] {
+        widht: 100%;
+        background-color: #4665bb;
+        border-color: #4665bb;
+        margin: 0;
+}
+
+.login-ui div.login-dialog-middle {
+        widht: 100%;
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+        background-color: #DCDCDC;
+}
+
+
