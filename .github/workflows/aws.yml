@@ -43,7 +43,6 @@ jobs:
       - name: Build and push Frontend Docker image
         uses: docker/build-push-action@master
         with:
-          context: docker-builder
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-guacamole:latest
 
