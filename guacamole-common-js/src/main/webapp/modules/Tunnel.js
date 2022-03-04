@@ -35,7 +35,8 @@ Guacamole.Tunnel = function() {
      * typically used for authentication. The format of data accepted is
      * up to the tunnel implementation.
      * 
-     * @param {String} data The data to send to the tunnel when connecting.
+     * @param {string} [data]
+     *     The data to send to the tunnel when connecting.
      */
     this.connect = function(data) {};
     
@@ -59,7 +60,7 @@ Guacamole.Tunnel = function() {
      * event if the new state is different and a handler has been defined.
      *
      * @private
-     * @param {Number} state
+     * @param {!number} state
      *     The new state of this tunnel.
      */
     this.setState = function(state) {
@@ -78,7 +79,7 @@ Guacamole.Tunnel = function() {
      * onuuid event if a handler has been defined.
      *
      * @private
-     * @param {String} uuid
+     * @param {string} uuid
      *     The new state of this tunnel.
      */
     this.setUUID = function setUUID(uuid) {
@@ -90,7 +91,7 @@ Guacamole.Tunnel = function() {
     /**
      * Returns whether this tunnel is currently connected.
      *
-     * @returns {boolean}
+     * @returns {!boolean}
      *     true if this tunnel is currently connected, false otherwise.
      */
     this.isConnected = function isConnected() {
@@ -101,16 +102,16 @@ Guacamole.Tunnel = function() {
     /**
      * The current state of this tunnel.
      * 
-     * @type {Number}
+     * @type {!number}
      */
-    this.state = Guacamole.Tunnel.State.CONNECTING;
+    this.state = Guacamole.Tunnel.State.CLOSED;
 
     /**
      * The maximum amount of time to wait for data to be received, in
      * milliseconds. If data is not received within this amount of time,
      * the tunnel is closed with an error. The default value is 15000.
      *
-     * @type {Number}
+     * @type {!number}
      */
     this.receiveTimeout = 15000;
 
@@ -121,7 +122,7 @@ Guacamole.Tunnel = function() {
      * the connection appears unresponsive and may close. The default value is
      * 1500.
      * 
-     * @type {Number}
+     * @type {!number}
      */
     this.unstableThreshold = 1500;
 
@@ -129,7 +130,7 @@ Guacamole.Tunnel = function() {
      * The UUID uniquely identifying this tunnel. If not yet known, this will
      * be null.
      *
-     * @type {String}
+     * @type {string}
      */
     this.uuid = null;
 
@@ -137,7 +138,7 @@ Guacamole.Tunnel = function() {
      * Fired when the UUID that uniquely identifies this tunnel is known.
      *
      * @event
-     * @param {String}
+     * @param {!string}
      *     The UUID uniquely identifying this tunnel.
      */
     this.onuuid = null;
@@ -146,8 +147,8 @@ Guacamole.Tunnel = function() {
      * Fired whenever an error is encountered by the tunnel.
      * 
      * @event
-     * @param {Guacamole.Status} status A status object which describes the
-     *                                  error.
+     * @param {!Guacamole.Status} status
+     *     A status object which describes the error.
      */
     this.onerror = null;
 
@@ -155,7 +156,8 @@ Guacamole.Tunnel = function() {
      * Fired whenever the state of the tunnel changes.
      * 
      * @event
-     * @param {Number} state The new state of the client.
+     * @param {!number} state
+     *     The new state of the client.
      */
     this.onstatechange = null;
 
@@ -163,9 +165,11 @@ Guacamole.Tunnel = function() {
      * Fired once for every complete Guacamole instruction received, in order.
      * 
      * @event
-     * @param {String} opcode The Guacamole instruction opcode.
-     * @param {Array} parameters The parameters provided for the instruction,
-     *                           if any.
+     * @param {!string} opcode
+     *     The Guacamole instruction opcode.
+     *
+     * @param {!string[]} parameters
+     *     The parameters provided for the instruction, if any.
      */
     this.oninstruction = null;
 
@@ -180,12 +184,14 @@ Guacamole.Tunnel = function() {
  * connection stability test pings/responses.
  *
  * @constant
- * @type {String}
+ * @type {!string}
  */
 Guacamole.Tunnel.INTERNAL_DATA_OPCODE = '';
 
 /**
  * All possible tunnel states.
+ *
+ * @type {!Object.<string, number>}
  */
 Guacamole.Tunnel.State = {
 
@@ -193,14 +199,14 @@ Guacamole.Tunnel.State = {
      * A connection is in pending. It is not yet known whether connection was
      * successful.
      * 
-     * @type {Number}
+     * @type {!number}
      */
     "CONNECTING": 0,
 
     /**
      * Connection was successful, and data is being received.
      * 
-     * @type {Number}
+     * @type {!number}
      */
     "OPEN": 1,
 
@@ -209,7 +215,7 @@ Guacamole.Tunnel.State = {
      * tunnel may have been explicitly closed by either side, or an error may
      * have occurred.
      * 
-     * @type {Number}
+     * @type {!number}
      */
     "CLOSED": 2,
 
@@ -217,7 +223,7 @@ Guacamole.Tunnel.State = {
      * The connection is open, but communication through the tunnel appears to
      * be disrupted, and the connection may close as a result.
      *
-     * @type {Number}
+     * @type {!number}
      */
     "UNSTABLE" : 3
 
@@ -229,15 +235,15 @@ Guacamole.Tunnel.State = {
  * @constructor
  * @augments Guacamole.Tunnel
  *
- * @param {String} tunnelURL
+ * @param {!string} tunnelURL
  *     The URL of the HTTP tunneling service.
  *
- * @param {Boolean} [crossDomain=false]
+ * @param {boolean} [crossDomain=false]
  *     Whether tunnel requests will be cross-domain, and thus must use CORS
  *     mechanisms and headers. By default, it is assumed that tunnel requests
  *     will be made to the same domain.
  *
- * @param {Object} [extraTunnelHeaders={}]
+ * @param {object} [extraTunnelHeaders={}]
  *     Key value pairs containing the header names and values of any additional
  *     headers to be sent in tunnel requests. By default, no extra headers will
  *     be added.
@@ -246,7 +252,9 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain, extraTunnelHeaders) {
 
     /**
      * Reference to this HTTP tunnel.
+     *
      * @private
+     * @type {!Guacamole.HTTPTunnel}
      */
     var tunnel = this;
 
@@ -269,7 +277,9 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain, extraTunnelHeaders) {
 
     /**
      * The current receive timeout ID, if any.
+     *
      * @private
+     * @type {number}
      */
     var receive_timeout = null;
 
@@ -277,7 +287,7 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain, extraTunnelHeaders) {
      * The current connection stability timeout ID, if any.
      *
      * @private
-     * @type {Number}
+     * @type {number}
      */
     var unstableTimeout = null;
 
@@ -286,7 +296,7 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain, extraTunnelHeaders) {
      * will only be set upon successful connection.
      *
      * @private
-     * @type {Number}
+     * @type {number}
      */
     var pingInterval = null;
 
@@ -296,7 +306,7 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain, extraTunnelHeaders) {
      *
      * @private
      * @constant
-     * @type {Number}
+     * @type {!number}
      */
     var PING_FREQUENCY = 500;
 
@@ -306,19 +316,38 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain, extraTunnelHeaders) {
      * tokens, etc.
      *
      * @private
+     * @type {!object}
      */
     var extraHeaders = extraTunnelHeaders || {};
 
     /**
-     * Adds the configured additional headers to the given request.
-     *
-     * @param {XMLHttpRequest} request
-     *     The request where the configured extra headers will be added.
-     *
-     * @param {Object} headers
-     *     The headers to be added to the request.
+     * The name of the HTTP header containing the session token specific to the
+     * HTTP tunnel implementation.
      *
      * @private
+     * @constant
+     * @type {!string}
+     */
+    var TUNNEL_TOKEN_HEADER = 'Guacamole-Tunnel-Token';
+
+    /**
+     * The session token currently assigned to this HTTP tunnel. All distinct
+     * HTTP tunnel connections will have their own dedicated session token.
+     *
+     * @private
+     * @type {string}
+     */
+    var tunnelSessionToken = null;
+
+    /**
+     * Adds the configured additional headers to the given request.
+     *
+     * @private
+     * @param {!XMLHttpRequest} request
+     *     The request where the configured extra headers will be added.
+     *
+     * @param {!object} headers
+     *     The headers to be added to the request.
      */
     function addExtraHeaders(request, headers) {
         for (var name in headers) {
@@ -360,8 +389,8 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain, extraTunnelHeaders) {
      * an error status.
      * 
      * @private
-     * @param {Guacamole.Status} status The status causing the connection to
-     *                                  close;
+     * @param {!Guacamole.Status} status
+     *     The status causing the connection to close;
      */
     function close_tunnel(status) {
 
@@ -411,8 +440,11 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain, extraTunnelHeaders) {
          * element in a Guacamole instruction.
          * 
          * @private
-         * @param value The value to convert.
-         * @return {string} The converted value.
+         * @param value
+         *     The value to convert.
+         *
+         * @return {!string}
+         *     The converted value.
          */
         function getElement(value) {
             var string = new String(value);
@@ -453,6 +485,7 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain, extraTunnelHeaders) {
             message_xmlhttprequest.withCredentials = withCredentials;
             addExtraHeaders(message_xmlhttprequest, extraHeaders);
             message_xmlhttprequest.setRequestHeader("Content-type", "application/octet-stream");
+            message_xmlhttprequest.setRequestHeader(TUNNEL_TOKEN_HEADER, tunnelSessionToken);
 
             // Once response received, send next queued event.
             message_xmlhttprequest.onreadystatechange = function() {
@@ -697,6 +730,7 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain, extraTunnelHeaders) {
         // Make request, increment request ID
         var xmlhttprequest = new XMLHttpRequest();
         xmlhttprequest.open("GET", TUNNEL_READ + tunnel.uuid + ":" + (request_id++));
+        xmlhttprequest.setRequestHeader(TUNNEL_TOKEN_HEADER, tunnelSessionToken);
         xmlhttprequest.withCredentials = withCredentials;
         addExtraHeaders(xmlhttprequest, extraHeaders);
         xmlhttprequest.send(null);
@@ -728,8 +762,15 @@ Guacamole.HTTPTunnel = function(tunnelURL, crossDomain, extraTunnelHeaders) {
 
             reset_timeout();
 
-            // Get UUID from response
+            // Get UUID and HTTP-specific tunnel session token from response
             tunnel.setUUID(connect_xmlhttprequest.responseText);
+            tunnelSessionToken = connect_xmlhttprequest.getResponseHeader(TUNNEL_TOKEN_HEADER);
+
+            // Fail connect attempt if token is not successfully assigned
+            if (!tunnelSessionToken) {
+                close_tunnel(new Guacamole.Status(Guacamole.Status.Code.UPSTREAM_NOT_FOUND));
+                return;
+            }
 
             // Mark as open
             tunnel.setState(Guacamole.Tunnel.State.OPEN);
@@ -765,25 +806,32 @@ Guacamole.HTTPTunnel.prototype = new Guacamole.Tunnel();
  * 
  * @constructor
  * @augments Guacamole.Tunnel
- * @param {String} tunnelURL The URL of the WebSocket tunneling service.
+ * @param {!string} tunnelURL
+ *     The URL of the WebSocket tunneling service.
  */
 Guacamole.WebSocketTunnel = function(tunnelURL) {
 
     /**
      * Reference to this WebSocket tunnel.
+     *
      * @private
+     * @type {Guacamole.WebSocketTunnel}
      */
     var tunnel = this;
 
     /**
      * The WebSocket used by this tunnel.
+     * 
      * @private
+     * @type {WebSocket}
      */
     var socket = null;
 
     /**
      * The current receive timeout ID, if any.
+     *
      * @private
+     * @type {number}
      */
     var receive_timeout = null;
 
@@ -791,7 +839,7 @@ Guacamole.WebSocketTunnel = function(tunnelURL) {
      * The current connection stability timeout ID, if any.
      *
      * @private
-     * @type {Number}
+     * @type {number}
      */
     var unstableTimeout = null;
 
@@ -800,14 +848,16 @@ Guacamole.WebSocketTunnel = function(tunnelURL) {
      * will only be set upon successful connection.
      *
      * @private
-     * @type {Number}
+     * @type {number}
      */
     var pingInterval = null;
 
     /**
      * The WebSocket protocol corresponding to the protocol used for the current
      * location.
+     *
      * @private
+     * @type {!Object.<string, string>}
      */
     var ws_protocol = {
         "http:":  "ws:",
@@ -820,7 +870,7 @@ Guacamole.WebSocketTunnel = function(tunnelURL) {
      *
      * @private
      * @constant
-     * @type {Number}
+     * @type {!number}
      */
     var PING_FREQUENCY = 500;
 
@@ -891,8 +941,8 @@ Guacamole.WebSocketTunnel = function(tunnelURL) {
      * an error status.
      * 
      * @private
-     * @param {Guacamole.Status} status The status causing the connection to
-     *                                  close;
+     * @param {!Guacamole.Status} status
+     *     The status causing the connection to close;
      */
     function close_tunnel(status) {
 
@@ -933,8 +983,11 @@ Guacamole.WebSocketTunnel = function(tunnelURL) {
          * element in a Guacamole instruction.
          * 
          * @private
-         * @param value The value to convert.
-         * @return {string} The converted value.
+         * @param {*} value
+         *     The value to convert.
+         *
+         * @return {!string}
+         *     The converted value.
          */
         function getElement(value) {
             var string = new String(value);
@@ -1085,7 +1138,7 @@ Guacamole.WebSocketTunnel.prototype = new Guacamole.Tunnel();
  * 
  * @constructor
  * @augments Guacamole.Tunnel
- * @param {...*} tunnelChain
+ * @param {...Guacamole.Tunnel} tunnelChain
  *     The tunnels to use, in order of priority.
  */
 Guacamole.ChainedTunnel = function(tunnelChain) {
@@ -1127,7 +1180,8 @@ Guacamole.ChainedTunnel = function(tunnelChain) {
      * Sets the current tunnel.
      * 
      * @private
-     * @param {Guacamole.Tunnel} tunnel The tunnel to set as the current tunnel.
+     * @param {!Guacamole.Tunnel} tunnel
+     *     The tunnel to set as the current tunnel.
      */
     function attach(tunnel) {
 
@@ -1269,15 +1323,15 @@ Guacamole.ChainedTunnel.prototype = new Guacamole.Tunnel();
  *
  * @constructor
  * @augments Guacamole.Tunnel
- * @param {String} url
+ * @param {!string} url
  *     The URL of a Guacamole protocol dump.
  *
- * @param {Boolean} [crossDomain=false]
+ * @param {boolean} [crossDomain=false]
  *     Whether tunnel requests will be cross-domain, and thus must use CORS
  *     mechanisms and headers. By default, it is assumed that tunnel requests
  *     will be made to the same domain.
  *
- * @param {Object} [extraTunnelHeaders={}]
+ * @param {object} [extraTunnelHeaders={}]
  *     Key value pairs containing the header names and values of any additional
  *     headers to be sent in tunnel requests. By default, no extra headers will
  *     be added.
@@ -1292,13 +1346,14 @@ Guacamole.StaticHTTPTunnel = function StaticHTTPTunnel(url, crossDomain, extraTu
     var tunnel = this;
 
     /**
-     * The current, in-progress HTTP request. If no request is currently in
-     * progress, this will be null.
+     * AbortController instance which allows the current, in-progress HTTP
+     * request to be aborted. If no request is currently in progress, this will
+     * be null.
      *
      * @private
-     * @type {XMLHttpRequest}
+     * @type {AbortController}
      */
-    var xhr = null;
+    var abortController = null;
 
     /**
      * Additional headers to be sent in tunnel requests. This dictionary can be
@@ -1306,25 +1361,9 @@ Guacamole.StaticHTTPTunnel = function StaticHTTPTunnel(url, crossDomain, extraTu
      * tokens, etc.
      *
      * @private
+     * @type {!object}
      */
     var extraHeaders = extraTunnelHeaders || {};
-
-    /**
-     * Adds the configured additional headers to the given request.
-     *
-     * @param {XMLHttpRequest} request
-     *     The request where the configured extra headers will be added.
-     *
-     * @param {Object} headers
-     *     The headers to be added to the request.
-     *
-     * @private
-     */
-    function addExtraHeaders(request, headers) {
-        for (var name in headers) {
-            request.setRequestHeader(name, headers[name]);
-        }
-    }
 
     this.sendMessage = function sendMessage(elements) {
         // Do nothing
@@ -1338,18 +1377,10 @@ Guacamole.StaticHTTPTunnel = function StaticHTTPTunnel(url, crossDomain, extraTu
         // Connection is now starting
         tunnel.setState(Guacamole.Tunnel.State.CONNECTING);
 
-        // Start a new connection
-        xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
-        xhr.withCredentials = !!crossDomain;
-        addExtraHeaders(xhr, extraHeaders);
-        xhr.responseType = 'text';
-        xhr.send(null);
-
-        var offset = 0;
-
-        // Create Guacamole protocol parser specifically for this connection
+        // Create Guacamole protocol and UTF-8 parsers specifically for this
+        // connection
         var parser = new Guacamole.Parser();
+        var utf8Parser = new Guacamole.UTF8Parser();
 
         // Invoke tunnel's oninstruction handler for each parsed instruction
         parser.oninstruction = function instructionReceived(opcode, args) {
@@ -1357,51 +1388,62 @@ Guacamole.StaticHTTPTunnel = function StaticHTTPTunnel(url, crossDomain, extraTu
                 tunnel.oninstruction(opcode, args);
         };
 
-        // Continuously parse received data
-        xhr.onreadystatechange = function readyStateChanged() {
+        // Allow new request to be aborted
+        abortController = new AbortController();
 
-            // Parse while data is being received
-            if (xhr.readyState === 3 || xhr.readyState === 4) {
+        // Stream using the Fetch API
+        fetch(url, {
+            headers : extraHeaders,
+            credentials : crossDomain ? 'include' : 'same-origin',
+            signal : abortController.signal
+        })
+        .then(function gotResponse(response) {
 
-                // Connection is open
-                tunnel.setState(Guacamole.Tunnel.State.OPEN);
+            // Reset state and close upon error
+            if (!response.ok) {
 
-                var buffer = xhr.responseText;
-                var length = buffer.length;
+                if (tunnel.onerror)
+                    tunnel.onerror(new Guacamole.Status(
+                        Guacamole.Status.Code.fromHTTPCode(response.status), response.statusText));
 
-                // Parse only the portion of data which is newly received
-                if (offset < length) {
-                    parser.receive(buffer.substring(offset));
-                    offset = length;
-                }
+                tunnel.disconnect();
+                return;
 
             }
 
-            // Clean up and close when done
-            if (xhr.readyState === 4)
-                tunnel.disconnect();
+            // Connection is open
+            tunnel.setState(Guacamole.Tunnel.State.OPEN);
 
-        };
+            var reader = response.body.getReader();
+            var processReceivedText = function processReceivedText(result) {
 
-        // Reset state and close upon error
-        xhr.onerror = function httpError() {
+                // Clean up and close when done
+                if (result.done) {
+                    tunnel.disconnect();
+                    return;
+                }
 
-            // Fail if file could not be downloaded via HTTP
-            if (tunnel.onerror)
-                tunnel.onerror(new Guacamole.Status(
-                    Guacamole.Status.Code.fromHTTPCode(xhr.status), xhr.statusText));
+                // Parse only the portion of data which is newly received
+                parser.receive(utf8Parser.decode(result.value));
 
-            tunnel.disconnect();
-        };
+                // Continue parsing when next chunk is received
+                reader.read().then(processReceivedText);
+
+            };
+
+            // Schedule parse of first chunk
+            reader.read().then(processReceivedText);
+
+        });
 
     };
 
     this.disconnect = function disconnect() {
 
-        // Abort and dispose of XHR if a request is in progress
-        if (xhr) {
-            xhr.abort();
-            xhr = null;
+        // Abort any in-progress request
+        if (abortController) {
+            abortController.abort();
+            abortController = null;
         }
 
         // Connection is now closed

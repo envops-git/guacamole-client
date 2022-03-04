@@ -66,7 +66,8 @@ public class ExtensionModule extends ServletModule {
             "1.0.0",
             "1.1.0",
             "1.2.0",
-            "1.3.0"
+            "1.3.0",
+            "1.4.0"
         ));
 
     /**
@@ -138,6 +139,13 @@ public class ExtensionModule extends ServletModule {
      */
     private final List<Listener> boundListeners =
             new ArrayList<Listener>();
+
+    /**
+     * All temporary files that should be deleted upon application shutdown, in
+     * reverse order of desired deletion. This will typically simply be the
+     * order that each file was created.
+     */
+    private final List<File> temporaryFiles = new ArrayList<>();
 
     /**
      * Service for adding and retrieving language resources.
@@ -221,7 +229,7 @@ public class ExtensionModule extends ServletModule {
     }
 
     /**
-     * Binds each of the the given AuthenticationProvider classes such that any
+     * Binds each of the given AuthenticationProvider classes such that any
      * service requiring access to the AuthenticationProvider can obtain it via
      * injection.
      *
@@ -261,6 +269,20 @@ public class ExtensionModule extends ServletModule {
     }
 
     /**
+     * Returns a list of all temporary files that should be deleted upon
+     * application shutdown, in reverse order of desired deletion. This will
+     * typically simply be the order that each file was created.
+     *
+     * @return
+     *     A List of all temporary files that should be deleted upon
+     *     application shutdown. The List is not modifiable.
+     */
+    @Provides
+    public List<File> getTemporaryFiles() {
+        return Collections.unmodifiableList(temporaryFiles);
+    }
+    
+    /**
      * Binds the given provider class such that a listener is bound for each
      * listener interface implemented by the provider and such that all bound
      * listener instances can be obtained via injection.
@@ -277,7 +299,7 @@ public class ExtensionModule extends ServletModule {
     }
 
     /**
-     * Binds each of the the given Listener classes such that any
+     * Binds each of the given Listener classes such that any
      * service requiring access to the Listener can obtain it via
      * injection.
      *
@@ -478,7 +500,7 @@ public class ExtensionModule extends ServletModule {
             try {
 
                 // Load extension from file
-                Extension extension = new Extension(getParentClassLoader(), extensionFile);
+                Extension extension = new Extension(getParentClassLoader(), extensionFile, temporaryFiles);
 
                 // Validate Guacamole version of extension
                 if (!isCompatible(extension.getGuacamoleVersion())) {
