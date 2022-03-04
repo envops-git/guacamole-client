@@ -71,4 +71,4 @@ jobs:
       - name: Check k8s deployments
         uses: kodermax/kubectl-aws-eks@master
         with:
-          args: rollout status guacamole -n $KUBE_NAMESPACE --timeout=120s
+          args: rollout status deployment guacamole -n $KUBE_NAMESPACE --timeout=120s
