@@ -120,10 +120,10 @@ angular.module('index').config(['$routeProvider', '$locationProvider',
         // Home screen
         .when('/', {
             title         : 'APP.NAME',
-            bodyClassName : 'home',
-            templateUrl   : 'app/home/templates/home.html',
-            controller    : 'homeController',
-            resolve       : { routeToUserHomePage: routeToUserHomePage }
+            bodyClassName : 'settings',
+            templateUrl   : 'app/settings/templates/settings.html',
+            controller    : 'settingsController',
+            resolve       : { updateCurrentToken: updateCurrentToken }
         })
 
         // Management screen
