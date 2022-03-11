@@ -27,7 +27,7 @@
     </appender>
 
     <!-- Log at INFO level -->
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="GUAC-DEFAULT" />
     </root>
 
