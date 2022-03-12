@@ -47,11 +47,11 @@
     </appender>
 
     <!-- Log at debug level -->
-    <logger name="logger" level="debug" additivity="false">
+    <logger name="logger" level="error" additivity="false">
         <appender-ref ref="FILE-ROLLING"/>
     </logger>
 
-    <root level="debug">
+    <root level="error">
         <appender-ref ref="GUAC-DEFAULT" />
         <appender-ref ref="FILE-ROLLING"/>
     </root>
