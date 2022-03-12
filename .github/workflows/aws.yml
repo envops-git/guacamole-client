@@ -3,7 +3,7 @@ name: Build and Deploy guacamole to k8s
 on:
   push:
     branches: 
-    - '1.3.0'
+    - 'develop1.3.0'
 
 env:
   REGISTRY: ghcr.io
@@ -33,7 +33,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: '1.3.0'
+          ref: 'develop1.3.0'
 
       - name: Log in to the github container registry
         uses: docker/login-action@master
