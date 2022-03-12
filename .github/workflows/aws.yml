@@ -3,7 +3,7 @@ name: Build and Deploy guacamole to k8s
 on:
   push:
     branches: 
-    - '1.3.0'
+    - 'guacamole-exec-client'
 
 env:
   REGISTRY: ghcr.io
@@ -33,7 +33,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: '1.3.0'
+          ref: 'guacamole-exec-client'
 
       - name: Log in to the github container registry
         uses: docker/login-action@master
@@ -46,7 +46,7 @@ jobs:
         uses: docker/build-push-action@master
         with:
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev
 
   deploy-to-k8s:
     needs: build-and-push-guacamole-image
@@ -63,7 +63,7 @@ jobs:
       - name: Deploy to k8s
         uses: kodermax/kubectl-aws-eks@master
         with:
-          args: rollout restart deployment guacamole -n $KUBE_NAMESPACE
+          args: rollout restart deployment guacamole-test1 -n $KUBE_NAMESPACE
 
   check-k8s-deployments:
     needs: [deploy-to-k8s]
@@ -73,4 +73,4 @@ jobs:
       - name: Check k8s deployments
         uses: kodermax/kubectl-aws-eks@master
         with:
-          args: rollout status deployment guacamole -n $KUBE_NAMESPACE --timeout=120s
+          args: rollout status deployment guacamole-test1 -n $KUBE_NAMESPACE --timeout=120s
