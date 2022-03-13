@@ -44,16 +44,16 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
         </encoder>
     </appender>
 
     <!-- Log at debug level -->
-    <logger name="logger" level="info" additivity="false">
+    <logger name="logger" level="debug" additivity="false">
         <appender-ref ref="FILE-ROLLING"/>
     </logger>
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="GUAC-DEFAULT" />
         <appender-ref ref="FILE-ROLLING"/>
     </root>
